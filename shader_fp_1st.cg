@@ -1,0 +1,177 @@
+////////////////////////////////////////////////////////////////////
+//
+// $Id: $
+//
+// fragment program to compute Q_hat
+//
+// Copyright (c) 2005 by Takashi Kanai. All rights reserved. 
+//
+////////////////////////////////////////////////////////////////////
+
+#include "mydefine.h"
+
+void main( in float4 hPos : POSITION,      // pixel position (but it can not be used ...)
+   	   in float4 texCoord : TEXCOORD0, // from point sprite
+  	   in float4 pPos : TEXCOORD1,     // pixel position (on NDC space) from vertex program
+  	   in float4 ref_functex : TEXCOORD2, // floating-point texture coordinate
+ 	   uniform float4 viewParam,
+	   uniform float drawMode,
+	   uniform samplerRECT polyParam,
+	   uniform float4x4 ModelView,
+	   uniform float4x4 ModelViewInv,
+  	   uniform float4x4 ModelViewProj,
+	   uniform float4x4 ModelViewProjInv,
+	   out float4 color : COLOR,
+   	   out float depth : DEPTH
+	   )
+{
+  // fetch function parameters from a texture
+  float tex_x = round( ref_functex.x * FID_DIV );
+  float tex_y = round( ref_functex.y * FID_DIV );
+
+  // centerX, centerY, centerZ, support
+  float4 param0 = texRECT( polyParam, float2( tex_x, tex_y ) );
+  // cXX, cYY, cZZ, .0f
+  float4 param1 = texRECT( polyParam, float2( tex_x+1, tex_y ) );
+  // cXY, cYZ, cZX, .0f
+  float4 param2 = texRECT( polyParam, float2( tex_x+2, tex_y ) );
+  // cX, cY, cZ, c0
+  float4 param3 = texRECT( polyParam, float2( tex_x+3, tex_y ) );
+
+  float4 center = float4( param0.xyz, 1.0f );
+
+  // transform the coefficients of implicit function
+#if 0
+  float3x3 Q;
+  Q[0][0] = param1.x;
+  Q[1][1] = param1.y;
+  Q[2][2] = param1.z;
+//   Q[3][3] = 1.0f;
+  Q[0][1] = Q[1][0] = .5f * param2.x;
+  Q[0][2] = Q[2][0] = .5f * param2.z;
+  Q[1][2] = Q[2][1] = .5f * param2.y;
+//   Q[0][3] = Q[1][3] = Q[2][3] = Q[3][0] = Q[3][1] = Q[3][2] = .0f;
+
+  float3x3 M = (float3x3) ModelView;
+  float3x3 Mt = transpose( M );
+  Q = mul( M, mul( Q, Mt ) );
+  float3 b = mul( M, param3.xyz );
+
+  float4 param1t = float4( Q[0][0], Q[1][1], Q[2][2], 1.0f );
+  float4 param2t = float4( 2.0f * Q[0][1], 2.0f * Q[1][2], 2.0f * Q[0][2], 1.0f );
+  float4 param3t = float4( b, param3.w );
+#endif
+
+#if 0
+   float4 param1t = param1;
+   float4 param2t = param2;
+   float4 param3t = param3;
+#endif
+
+#if 0
+  // get pixel position on window space
+  float2 wPos;
+  wPos.x = pPos.x / pPos.w;
+  wPos.y = pPos.y / pPos.w;
+  wPos.x = round(viewParam[0]+(1.0f+wPos.x)*viewParam[2]/2.0f - .5f);
+  wPos.y = round(viewParam[1]+(1.0f+wPos.y)*viewParam[3]/2.0f - .5f);
+#endif
+
+  // compute q_o (q in object space) and e_o (eye in object space)
+  float4 qo;
+  if ( drawMode == DRAW_BILLBOARD )
+    qo = mul( ModelViewProjInv, pPos ) - center;
+  else
+    {
+      float4 qn = float4(  2.0f * ( texCoord.x - .5f ) * (ref_functex.z) + pPos.x,
+			  -2.0f * ( texCoord.y - .5f ) * (ref_functex.z) + pPos.y,
+			   pPos.z, 
+			   pPos.w 
+			   );
+      qo = mul( ModelViewProjInv, qn ) - center;
+    }
+
+
+  float4 eo = mul( ModelViewInv, float4( .0f, .0f, .0f, 1.0f ) ) - center;
+
+  // ray: x = eo + t * p
+  float4 p = qo - eo;
+  
+  // compute two intersection points qp and qm between a ray and a quadtic surface
+  //  At^2 + Bt + C = 0
+  float A = ( param1.x * p.x * p.x + 
+	      param1.y * p.y * p.y + 
+	      param1.z * p.z * p.z + 
+	      param2.x * p.x * p.y + 
+	      param2.y * p.y * p.z + 
+	      param2.z * p.z * p.x );
+  float B = ( 2.0f * param1.x * p.x * eo.x + 
+	      2.0f * param1.y * p.y * eo.y + 
+	      2.0f * param1.z * p.z * eo.z + 
+	      param2.x * (p.x * eo.y + p.y * eo.x) + 
+	      param2.y * (p.y * eo.z + p.z * eo.y) + 
+	      param2.z * (p.z * eo.x + p.x * eo.z) + 
+	      param3.x * p.x + 
+	      param3.y * p.y + 
+	      param3.z * p.z );
+  float C = ( param1.x * eo.x * eo.x + 
+	      param1.y * eo.y * eo.y + 
+	      param1.z * eo.z * eo.z + 
+	      param2.x * eo.x * eo.y + 
+	      param2.y * eo.y * eo.z + 
+	      param2.z * eo.z * eo.x +
+	      param3.x * eo.x + 
+	      param3.y * eo.y + 
+	      param3.z * eo.z + 
+	      param3.w );
+
+  float tmp0 = B*B - 4.0f * A * C;
+  if ( tmp0 >= 0.0f )
+    {
+      float tmp = sqrt( tmp0 );
+      float tmpq = -.5f * (B + sign(B) * tmp);
+      float tp = tmpq / A;
+      float tm = C / tmpq;
+      float4 qp = eo + p * tp + center;
+      float4 qm = eo + p * tm + center;
+
+      float disp = distance( qp.xyz, center.xyz );
+      float dism = distance( qm.xyz, center.xyz );
+
+      // pick up a point closer to a center point of a sphere
+      float4 q;
+      if ( (disp < param0.w) && (dism < param0.w) )
+	{
+	  float edisp = distance( qp.xyz, eo.xyz+center.xyz );
+	  float edism = distance( qm.xyz, eo.xyz+center.xyz );
+	  if ( edisp < edism ) q = qp;
+	  else                 q = qm;
+	}
+      else if (disp < param0.w)
+	{
+	  q = qp;
+	}
+      else if (dism < param0.w) 
+	{
+	  q = qm;
+	}
+      else
+	{
+ 	  discard;
+	}
+
+      color = q;
+//       color = qo + center;
+
+      // depth correction
+#if 1
+      float4 qa = mul( ModelViewProj, q );
+      depth = (qa.z - viewParam[0]) / (viewParam[1] - viewParam[0] );
+#endif
+    }
+  else 
+    {
+      discard;
+    }
+}
+

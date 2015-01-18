@@ -1,0 +1,185 @@
+////////////////////////////////////////////////////////////////////
+//
+// $Id: $
+//
+// Copyright (c) 2005 by Takashi Kanai. All rights reserved. 
+//
+////////////////////////////////////////////////////////////////////
+
+// GL Material
+struct cgglMaterial{
+  uniform float4   DiffMat;       //Diffuse material
+  uniform float4   SpecMat;       //Specular material
+  uniform float4   AmbMat;        //Ambient material
+  uniform float4   ShineMat;      //Shininess material, specular power
+  uniform float4   EmisMat;       //Emissive material
+};
+
+// GL Lights
+struct cgglLight{
+  uniform float4   LightVec;      //Light direction
+  uniform float4   LightPos;      //Light position
+  uniform float4   DiffLight;     //Diffuse light
+  uniform float4   SpecLight;     //Specular light
+  uniform float4   AmbLight;      //Ambient light
+  uniform float3   AttenLight;    //the attenuation terms: constant, linear, quadradic
+  uniform float2   SpotLight;     //spot light parameters: cos(spot cuttoff angle), spot power
+};
+
+
+//======================================================================
+//   Spot light and local viewer shading model
+//======================================================================
+
+float4 light_spot_view_local(float3 epos,         //the eye space vertex position
+			     float3 norm,         //the vertex normal
+			     cgglLight    lt,
+			     cgglMaterial mat)
+{
+	
+  float3 vert2light = lt.LightPos.xyz - epos;  //vector from vertex to the light
+  float d = length(vert2light);         //distance between the two, need this for attenuation
+  float3 ldir = vert2light/d;           //light direction
+  float3 vdir = normalize(-epos);       //view direction, redundent for multiple lights
+  float3 half = normalize(ldir + vdir); //halfway vector
+	
+  // Compute the diffuse and specular coefficients
+  float4 coeffs = lit(dot(norm,ldir), dot(norm,half), mat.ShineMat.x);
+	
+  // Compute spotlight effect
+  float3 lightDir = normalize(lt.LightVec.xyz);
+  float spotDot = dot(ldir, -lightDir);
+  float4 spot  = lit(spotDot - lt.SpotLight.x, spotDot, lt.SpotLight.y);
+	
+  // Compute the standard shading model
+  float4 outCol = 1/(lt.AttenLight.x + d*lt.AttenLight.y + d*d*lt.AttenLight.z) *   
+    //attenuation term
+    (lt.AmbLight*mat.AmbMat +                       //ambient term
+     lt.DiffLight*mat.DiffMat*coeffs.y +            //diffuse term
+     lt.SpecLight*mat.SpecMat*coeffs.z);            //specular term
+	
+  return outCol;	
+}
+
+
+//======================================================================
+//   Point light and local viewer shading model
+//======================================================================
+
+float4 light_point_view_local(float3 epos,         //the eye space vertex position
+			      float3 norm,         //the vertex normal
+			      cgglLight    lt,     //the light
+			      cgglMaterial mat)    //the material
+{
+  float3 vert2light = lt.LightPos.xyz - epos;  //vector from vertex to the light
+  float d = length(vert2light);         //distance between the two, need this for attenuation
+  float3 ldir = vert2light/d;           //light direction
+  float3 vdir = normalize(-epos);       //view direction, redundent for multiple lights
+  float3 halfv = normalize(ldir + vdir); //halfway vector
+	
+  // Compute the diffuse and specular coefficients
+  //  the diffuse cosine is in coeffs.y, the specular is in coeffs.z
+  float4 coeffs = lit(dot(norm,ldir), dot(norm,halfv), mat.ShineMat.x);
+	
+  // Compute the standard shading model
+  float4 outCol = 1/(lt.AttenLight.x + d*lt.AttenLight.y + d*d*lt.AttenLight.z) * 
+    //attenuation term
+    (lt.AmbLight*mat.AmbMat +                       //ambient term
+     lt.DiffLight*mat.DiffMat*coeffs.y +            //diffuse term
+     lt.SpecLight*mat.SpecMat*coeffs.z);            //specular term
+  
+  return outCol;	
+}
+
+//======================================================================
+//   Directional light and infinite viewer shading model
+//======================================================================
+
+float4 light_directional_view_inf(float3 norm,         //the vertex normal
+				  cgglLight lt,
+				  cgglMaterial mat)
+{
+  float3 lightDir = normalize(lt.LightVec.xyz);
+  
+  float3 vdir = {0,0,1};
+  float3 half = normalize(vdir - lightDir);
+	
+  float4 coeffs = lit(dot(norm, - lightDir), dot(norm,half),mat.ShineMat.x);
+	
+  // Compute the standard shading model
+  float4 outCol = lt.AmbLight*mat.AmbMat +               //ambient term
+    lt.DiffLight*mat.DiffMat*coeffs.y +            //diffuse term
+    lt.SpecLight*mat.SpecMat*coeffs.z;             //specular term
+
+  return outCol;
+}
+
+//======================================================================
+//   Directional light and local viewer shading model
+//======================================================================
+
+float4 light_directional_view_local(float3 epos,         //the eye space vertex position
+				    float3 norm,         //the vertex normal
+				    cgglLight    lt,     //the light
+				    cgglMaterial mat)    //the material
+{
+  float3 vdir = normalize(-epos);
+  float3 lightDir = normalize(lt.LightVec.xyz);
+  float3 half = normalize(vdir - lightDir);
+	
+  float4 coeffs = lit(dot(norm, - lightDir), dot(norm,half),mat.ShineMat.x);
+	
+  // Compute the standard shading model
+  float4 outCol = lt.AmbLight*mat.AmbMat +               //ambient term
+    lt.DiffLight*mat.DiffMat*coeffs.y +            //diffuse term
+    lt.SpecLight*mat.SpecMat*coeffs.z;             //specular term
+  return outCol;
+}
+
+void main( float4 hPos : POSITION,
+	   float2 texCoord : TEXCOORD0,
+ 	   uniform samplerRECT positionT,
+ 	   uniform samplerRECT normalT,
+	   uniform float4 bgColor,
+           uniform float4x4 ModelViewProj,
+           uniform float4x4 ModelView,
+           uniform float4x4 ModelViewIT,
+ 	   uniform cgglMaterial mat,
+ 	   uniform cgglLight lt,
+	   out float4 color : COLOR0  )
+{
+  float4 pos = texRECT( positionT, texCoord );
+  float4 nrm = texRECT( normalT, texCoord );
+
+  if ( (nrm.x != .0f) || (nrm.y != .0f) || (nrm.z != .0f) )
+    {
+      pos /= pos.w;
+      nrm /= nrm.w;
+      normalize( nrm.xyz );
+
+      //       color = float4( nrm.xyz, 1.0f );
+
+#if 1
+      float4 HPos = mul( ModelViewProj, pos );  //The homogeneous vertex position
+      float4 EPos = mul( ModelView, pos );      //The eye-space vertex position
+	
+      //------------------------------------------------------------
+      // Transform the normal from object-space to eye-space
+      //    We will do all of our lighting in eye-space
+      //------------------------------------------------------------
+      float3 normal = normalize( mul( (float3x3) ModelViewIT, nrm.xyz ) );
+
+//       color = light_spot_view_local( EPos.xyz, normal, lt, mat );
+      color = light_point_view_local( EPos.xyz, normal, lt, mat );
+//       color = light_directional_view_local( EPos.xyz, normal, lt, mat );
+//       color = light_directional_view_inf( normal, lt, mat );
+	
+      color += mat.EmisMat;  //be sure to add the emi7ssive color separate from the light
+
+#endif
+    }
+  else
+    {
+      color = bgColor;
+    }
+}

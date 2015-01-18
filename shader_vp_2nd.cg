@@ -1,0 +1,42 @@
+////////////////////////////////////////////////////////////////////
+//
+// $Id: $
+//
+// Copyright (c) 2005 by Takashi Kanai. All rights reserved. 
+//
+////////////////////////////////////////////////////////////////////
+
+#include "mydefine.h"
+
+void main(in float4 pos   : POSITION,
+          in float4 color : COLOR0,
+ 	  uniform float2 size_param,
+          uniform float4x4 ModelViewProj,
+
+          out float4 hpos : POSITION,
+   	  out float4 ppos : TEXCOORD1,
+	  out float4 ref_functex : TEXCOORD2,
+	  out float psize : PSIZE
+          )
+{
+  hpos = mul( ModelViewProj, pos );
+  ppos = mul( ModelViewProj, pos );
+  // 2D texture, support size in NDC coordinate, support size in object coordinate
+  ref_functex = color;
+
+  //
+  // calculate point size
+  //
+  // color.w: support radi (r)
+  // hpos.z: z_eye
+  // size_param.x: 2.0 * n / (t-b) (see eq.5 in [Botsch04])
+  // size_param.y: h_vp
+  //
+  ref_functex.z = color.w * FID_DIV * size_param.x;
+
+// #if 0
+//   float tmp = color.w * FID_DIV * size_param.x / hpos.w;
+// #endif
+//   asize.x = tmp; // screen coordinate
+  psize = ref_functex.z * size_param.y / hpos.z; // screen coordinate
+}

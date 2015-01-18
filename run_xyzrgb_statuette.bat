@@ -1,0 +1,1 @@
+slimviewGPU.exe data\xyzrgb_statuette_0.005.slim2

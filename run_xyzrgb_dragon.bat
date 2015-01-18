@@ -1,0 +1,1 @@
+slimviewGPU.exe data\xyzrgb_dragon_0.005.slim2

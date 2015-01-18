@@ -1,0 +1,61 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fbo_test", "fbo_test.vcproj", "{0379D39D-959D-4C0B-97A1-889C9AE92032}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4E7A181-F772-4FFB-98BD-11AC0693AF04} = {E4E7A181-F772-4FFB-98BD-11AC0693AF04}
+		{05D224A7-B88E-4E79-80BC-1F79EB20CC58} = {05D224A7-B88E-4E79-80BC-1F79EB20CC58}
+		{65F7E1C8-B7B4-4F08-8BE5-0532B15E756F} = {65F7E1C8-B7B4-4F08-8BE5-0532B15E756F}
+		{6543E4DC-0552-4F61-9420-A8268AFF8A9A} = {6543E4DC-0552-4F61-9420-A8268AFF8A9A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "meshL", "..\..\megapoly\megapoly\VC\meshL\meshL.vcproj", "{05D224A7-B88E-4E79-80BC-1F79EB20CC58}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "meshA", "..\..\megapoly\megapoly\VC\meshA\meshA.vcproj", "{65F7E1C8-B7B4-4F08-8BE5-0532B15E756F}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lio", "..\..\megapoly\megapoly\VC\lio\lio.vcproj", "{E4E7A181-F772-4FFB-98BD-11AC0693AF04}"
+	ProjectSection(ProjectDependencies) = postProject
+		{05D224A7-B88E-4E79-80BC-1F79EB20CC58} = {05D224A7-B88E-4E79-80BC-1F79EB20CC58}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "render", "..\..\megapoly\megapoly\VC\render\render.vcproj", "{6543E4DC-0552-4F61-9420-A8268AFF8A9A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4E7A181-F772-4FFB-98BD-11AC0693AF04} = {E4E7A181-F772-4FFB-98BD-11AC0693AF04}
+		{05D224A7-B88E-4E79-80BC-1F79EB20CC58} = {05D224A7-B88E-4E79-80BC-1F79EB20CC58}
+		{65F7E1C8-B7B4-4F08-8BE5-0532B15E756F} = {65F7E1C8-B7B4-4F08-8BE5-0532B15E756F}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{0379D39D-959D-4C0B-97A1-889C9AE92032}.Debug.ActiveCfg = Debug|Win32
+		{0379D39D-959D-4C0B-97A1-889C9AE92032}.Debug.Build.0 = Debug|Win32
+		{0379D39D-959D-4C0B-97A1-889C9AE92032}.Release.ActiveCfg = Release|Win32
+		{0379D39D-959D-4C0B-97A1-889C9AE92032}.Release.Build.0 = Release|Win32
+		{05D224A7-B88E-4E79-80BC-1F79EB20CC58}.Debug.ActiveCfg = Debug|Win32
+		{05D224A7-B88E-4E79-80BC-1F79EB20CC58}.Debug.Build.0 = Debug|Win32
+		{05D224A7-B88E-4E79-80BC-1F79EB20CC58}.Release.ActiveCfg = Release|Win32
+		{05D224A7-B88E-4E79-80BC-1F79EB20CC58}.Release.Build.0 = Release|Win32
+		{65F7E1C8-B7B4-4F08-8BE5-0532B15E756F}.Debug.ActiveCfg = Debug|Win32
+		{65F7E1C8-B7B4-4F08-8BE5-0532B15E756F}.Debug.Build.0 = Debug|Win32
+		{65F7E1C8-B7B4-4F08-8BE5-0532B15E756F}.Release.ActiveCfg = Release|Win32
+		{65F7E1C8-B7B4-4F08-8BE5-0532B15E756F}.Release.Build.0 = Release|Win32
+		{E4E7A181-F772-4FFB-98BD-11AC0693AF04}.Debug.ActiveCfg = Debug|Win32
+		{E4E7A181-F772-4FFB-98BD-11AC0693AF04}.Debug.Build.0 = Debug|Win32
+		{E4E7A181-F772-4FFB-98BD-11AC0693AF04}.Release.ActiveCfg = Release|Win32
+		{E4E7A181-F772-4FFB-98BD-11AC0693AF04}.Release.Build.0 = Release|Win32
+		{6543E4DC-0552-4F61-9420-A8268AFF8A9A}.Debug.ActiveCfg = Debug|Win32
+		{6543E4DC-0552-4F61-9420-A8268AFF8A9A}.Debug.Build.0 = Debug|Win32
+		{6543E4DC-0552-4F61-9420-A8268AFF8A9A}.Release.ActiveCfg = Release|Win32
+		{6543E4DC-0552-4F61-9420-A8268AFF8A9A}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
