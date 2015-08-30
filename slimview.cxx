@@ -2175,10 +2175,9 @@ void display()
   if ( fps.timing_updated() )
     {
       float f = fps.get_fps();
-      sprintf( buf,"%.3f fps  slimballs: %d", 
-	       f, slimball_count
-	       );
       if ( max_fps < f ) max_fps = f;
+      sprintf( buf,"%.1f fps max: %.1f #balls: %d",
+               f, max_fps, slimball_count );
     }
 
   char str0[BUFSIZ], str1[BUFSIZ];
@@ -2191,7 +2190,7 @@ void display()
   else 
     strcpy( str1, "LOD" );
       
-  sprintf( txt, "SLIM GPU - %s - %s - %s", str0, str1, buf );
+  sprintf( txt, "%s - %s - %s", str0, str1, buf );
   ::glutSetWindowTitle( txt );  
 
   if ( isCapture )
