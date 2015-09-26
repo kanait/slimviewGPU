@@ -1,1 +1,2 @@
-slimviewGPU.exe data\dragon_0.01.slim2
+SET PATH=%PATH%;.\Release
+.\Release\slimviewGPU-vs2015.exe ..\data\data\dragon_0.01.slim2
