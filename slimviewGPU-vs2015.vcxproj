@@ -158,6 +158,9 @@
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="ImageMaker.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="mydefine.h" />
+    <ClInclude Include="RenderTexture.h" />
+    <ClInclude Include="RenderTextureFBO.h" />
     <ClInclude Include="ViewFrustum.hxx" />
   </ItemGroup>
   <ItemGroup>
