@@ -119,14 +119,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;RENDER_FBO;OLD_SLIM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\lib\glew-1.12.0\include;..\lib\Cg\include;..\include\vecmath-c++-1.2-1.4;..\render;..\lib\lpng1618;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib\glew-1.13.0\include;..\lib\Cg\include;..\include\vecmath-c++-1.2-1.4;..\render;..\lib\lpng1621;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\lib\glew-1.12.0\lib\Release\Win32;..\lib\lpng1618\projects\vstudio\Release Library;..\lib\Cg\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib\glew-1.13.0\lib\Release\Win32;..\lib\lpng1621\projects\vstudio\Release Library;..\lib\Cg\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>cg.lib;cgGL.lib;glew32.lib;libpng16.lib;zlib.lib;glut32.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
@@ -141,14 +141,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;RENDER_FBO;OLD_SLIM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\lib\glew-1.12.0\include;..\lib\Cg\include;..\include\vecmath-c++-1.2-1.4;..\render;..\lib\lpng1618</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib\glew-1.13.0\include;..\lib\Cg\include;..\include\vecmath-c++-1.2-1.4;..\render;..\lib\lpng1621</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\lib\glew-1.12.0\lib\Release\x64;..\lib\lpng1618\projects\vstudio\x64\Release Library;..\lib\Cg\lib.x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib\glew-1.13.0\lib\Release\x64;..\lib\lpng1621\projects\vstudio\x64\Release Library;..\lib\Cg\lib.x64</AdditionalLibraryDirectories>
       <AdditionalDependencies>cg.lib;cgGL.lib;glew32.lib;libpng16.lib;zlib.lib;glut32.lib;glu32.lib;opengl32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
