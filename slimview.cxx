@@ -2169,7 +2169,7 @@ void display()
       break;
     }
 
-  checkGLErrors("display");
+  checkGLErrors((char*)"display");
 
   fps.frame();
   if ( fps.timing_updated() )
@@ -2460,8 +2460,10 @@ int main( int argc, char **argv )
   //pane.setIsLightOn( 1, false );
 
 #ifdef OLD_SLIM
-  pane.setViewPoint( Point3f( .0f, .0f, 55.0f ) );
-  pane.setViewVector( Vector3f( .0f, .0f, -55.0f ) ); 
+  Point3f p(.0f, .0f, 55.0f);
+  pane.setViewPoint( p );
+  Vector3f v(.0f, .0f, -55.0f);
+  pane.setViewVector( v ); 
   pane.setMagObject( 10.0f );
 #endif // OLD_SLIM
 
