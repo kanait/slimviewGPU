@@ -1,12 +1,8 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id$
-// $Date$
-// $Author$
-// $Rev$
-// $URL$
+// $Id: slimview.cxx 2021/06/01 02:04:07 kanai Exp $
 //
-// Copyright (c) 2005-2012 by Takashi Kanai. All rights reserved. 
+// Copyright (c) by Takashi Kanai. All rights reserved. 
 //
 ////////////////////////////////////////////////////////////////////
 
@@ -77,12 +73,12 @@ using namespace kh_vecmath;
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-int width = 512;
-int height = 512;
+// int width = 512;
+// int height = 512;
 //int width = 800;
 //int height = 800;
-// int width = 1024;
-// int height = 1024;
+int width = 1024;
+int height = 1024;
 // int width = 1280;
 // int height = 1024;
 
