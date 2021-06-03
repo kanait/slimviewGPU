@@ -130,7 +130,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;RENDER_FBO;NEW_SLIM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\include\vecmath-c++-1.2-1.4;C:\Users\kanai\Dropbox\code\render;..\lib\Cg\include;..\lib\glew-2.2.0\include;..\lib\zlib-1.2.11;..\lib\lpng1637-vs2019;C:\Users\kanai\Dropbox\code\mesh2slim;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\external\vecmath-cpp;.\external\render;..\lib\Cg\include;..\lib\glew-2.2.0\include;..\lib\zlib-1.2.11;..\lib\lpng1637-vs2019;C:\Users\kanai\Dropbox\code\mesh2slim;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
