@@ -1,4 +1,0 @@
-GL_ARB_point_sprite
-
-- pbuffer の中で使うと，サイズが GL_POINT_SIZE_MAX_ARB のサイズに制限される
-- pbuffer の中で使うと，劇的に遅くなる（ラスタライズの部分？）
