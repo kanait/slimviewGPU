@@ -2464,8 +2464,10 @@ int main( int argc, char **argv )
 #endif // OLD_SLIM
 
 #ifdef NEW_SLIM
-  pane.setViewPoint( Point3f( .0f, .0f, 30.0f ) );
-  pane.setViewVector( Vector3f( .0f, .0f, -30.0f ) ); 
+  Point3f p(.0f, .0f, 30.0f);
+  pane.setViewPoint( p );
+  Vector3f v(.0f, .0f, -30.0f);
+  pane.setViewVector( v ); 
   pane.setMagObject( 10.0f );
 #endif // NEW_SLIM
 

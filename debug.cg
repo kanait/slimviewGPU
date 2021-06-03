@@ -1,5 +1,0 @@
-float4 main( float2 wpos : WPOS,
-	     uniform samplerRECT pbuffer ) : COLOR
-{
-  return texRECT( pbuffer, wpos );
-}
