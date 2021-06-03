@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: slimview.cxx 2021/06/01 02:04:07 kanai Exp $
+// $Id: slimview.cxx 2021/06/03 18:20:48 kanai Exp $
 //
 // Copyright (c) by Takashi Kanai. All rights reserved. 
 //
@@ -33,7 +33,7 @@ using namespace kh_vecmath;
 #endif // VM_INCLUDE_NAMESPACE
 
 #include "mydef.h"
-#include "nvtimer.h"
+// #include "nvtimer.h"
 
 #ifndef RENDER_FBO
 
@@ -128,8 +128,12 @@ GLMaterial ballMtl( myBallMatl );
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-timer fps(10);
-float max_fps = .0f;
+#include "c11timer.hxx"
+C11Timer c11fps;
+double max_c11fps = 0.0;
+
+// timer fps(10);
+// float max_fps = .0f;
 char buf[BUFSIZ];
 char txt[BUFSIZ];
 int slimball_count = 0;
@@ -2167,14 +2171,17 @@ void display()
 
   checkGLErrors((char*)"display");
 
-  fps.frame();
-  if ( fps.timing_updated() )
-    {
-      float f = fps.get_fps();
-      if ( max_fps < f ) max_fps = f;
-      sprintf( buf,"%.1f fps max: %.1f #balls: %d",
-               f, max_fps, slimball_count );
-    }
+  double f = c11fps.CheckGetFPS();
+  if ( max_c11fps < f ) max_c11fps = f;
+
+  // fps.frame();
+  // if ( fps.timing_updated() )
+  //   {
+  //     float f = fps.get_fps();
+  //     if ( max_fps < f ) max_fps = f;
+  sprintf( buf,"%.1f fps max: %.1f #balls: %d",
+           f, max_c11fps, slimball_count );
+  //   }
 
   char str0[BUFSIZ], str1[BUFSIZ];
   if ( draw_mode == DRAW_BILLBOARD )
@@ -2284,7 +2291,7 @@ void keyboard( unsigned char c, int x, int y )
     {
     case 'q':
 
-      cout << "max fps: " << max_fps << endl;
+      cout << "max fps: " << max_c11fps << endl;
       destroyRenderTextures();
       destroyFPBuffer();
       destroyCg();
@@ -2343,48 +2350,56 @@ void keyboard( unsigned char c, int x, int y )
       render_mode = RENDER_GPU;
       draw_mode   = DRAW_BILLBOARD;
       lod_mode = LOD_NONE;
+      max_c11fps = 0.0;
       break;
       
     case '2':
       render_mode = RENDER_GPU;
       draw_mode   = DRAW_POINTSPRITE;
       lod_mode = LOD_NONE;
+      max_c11fps = 0.0;
       break;
 
     case '3':
       render_mode = RENDER_GPU;
       draw_mode   = DRAW_BILLBOARD;
       lod_mode = LOD_LEVEL;
+      max_c11fps = 0.0;
       break;
 
     case '4':
       render_mode = RENDER_GPU;
       draw_mode   = DRAW_POINTSPRITE;
       lod_mode = LOD_LEVEL;
+      max_c11fps = 0.0;
       break;
 
     case '5':
       render_mode = RENDER_GPU;
       draw_mode   = DRAW_BILLBOARD;
       lod_mode = LOD_ERROR;
+      max_c11fps = 0.0;
       break;
 
     case '6':
       render_mode = RENDER_BALL;
       lod_mode = LOD_NONE;
+      max_c11fps = 0.0;
       break;
 
     case '7':
       render_mode = RENDER_BALL;
       lod_mode = LOD_ERROR;
+      max_c11fps = 0.0;
       break;
 
     case '8':
       render_mode = RENDER_NONE;
       lod_mode = LOD_NONE;
+      max_c11fps = 0.0;
       break;
     }
-  
+
   ::glutPostRedisplay();
 }
 
@@ -2411,20 +2426,17 @@ void init_menu()
 void idle()
 {
   ::glutPostRedisplay();
-
 }
 
 int main( int argc, char **argv )
 {
-  char filename[BUFSIZ];
   if ( argc < 2 )
     {
-      strcpy( filename, "moai_0.02.slim2" );
+      std::cerr << "Usage: " << argv[0] << " in.slim2t" << std::endl;
+      return 1;
     }
-  else
-    {
-      strcpy( filename, argv[1] );
-    }
+  char filename[BUFSIZ];
+  strcpy( filename, argv[1] );
 
 #ifdef OLD_SLIM
   // initialize old SLIM
@@ -2437,7 +2449,7 @@ int main( int argc, char **argv )
   SlimTreefIO slimtreeIO( slimtree );
   slimtreeIO.inputFromFile( filename );
 #endif // NEW_SLIM
-  
+
   ::glutInitWindowSize( width, height );
   ::glutInit( &argc, argv );
   //::glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_DEPTH | GLUT_STENCIL );
@@ -2454,6 +2466,7 @@ int main( int argc, char **argv )
   
   pane.init( width, height );
   //pane.setIsLightOn( 1, false );
+  cout << "aa" << endl;
 
 #ifdef OLD_SLIM
   Point3f p(.0f, .0f, 55.0f);
@@ -2507,11 +2520,11 @@ int main( int argc, char **argv )
     }
 #endif
   
-  if ( argc == 3 )
-    {
-      VWIO vw_in;
-      vw_in.inputFromFile( argv[2], pane.manip() );
-    }
+  // if ( argc == 3 )
+  //   {
+  //     VWIO vw_in;
+  //     vw_in.inputFromFile( argv[2], pane.manip() );
+  //   }
 
   ::glutMainLoop();
   return 0;
