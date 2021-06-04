@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: BasisFunction.hxx 2021/06/03 02:43:15 kanai Exp $
+// $Id: BasisFunction.hxx 2021/06/04 23:58:41 kanai Exp $
 //
-// Copyright (c) 2005 by RIKEN. All rights reserved. 
+// Copyright (c) by Takashi Kanai. All rights reserved. 
 //
 ////////////////////////////////////////////////////////////////////
 

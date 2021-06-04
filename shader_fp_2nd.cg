@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: $
+// $Id: shader_fp_2nd.cg 2021/06/05 00:00:41 kanai Exp $
 //
 // fragment program for blending q
 //
-// Copyright (c) 2005 by Takashi Kanai. All rights reserved. 
+// Copyright (c) by Takashi Kanai. All rights reserved. 
 //
 ////////////////////////////////////////////////////////////////////
 

@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: $
+// $Id: shader_fp_1st.cg 2021/06/05 00:00:24 kanai Exp $
 //
 // fragment program to compute Q_hat
 //
-// Copyright (c) 2005 by Takashi Kanai. All rights reserved. 
+// Copyright (c) by Takashi Kanai. All rights reserved. 
 //
 ////////////////////////////////////////////////////////////////////
 

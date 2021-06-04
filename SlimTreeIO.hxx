@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: SlimTreeIO.hxx 2021/06/02 23:06:28 kanai Exp $
+// $Id: SlimTreeIO.hxx 2021/06/04 23:59:05 kanai Exp $
 //
-// Copyright (c) 2005 by RIKEN. All rights reserved. 
+// Copyright (c) by Takashi Kanai. All rights reserved. 
 //
 ////////////////////////////////////////////////////////////////////
 
