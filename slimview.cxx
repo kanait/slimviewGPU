@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: slimview.cxx 2021/06/03 18:20:48 kanai Exp $
+// $Id: slimview.cxx 2021/06/04 19:22:17 kanai Exp $
 //
 // Copyright (c) by Takashi Kanai. All rights reserved. 
 //
@@ -2466,7 +2466,6 @@ int main( int argc, char **argv )
   
   pane.init( width, height );
   //pane.setIsLightOn( 1, false );
-  cout << "aa" << endl;
 
 #ifdef OLD_SLIM
   Point3f p(.0f, .0f, 55.0f);

@@ -15,6 +15,28 @@ At first, you may try to use binary release (x64),
 which is available from [here](https://github.com/kanait/slimviewGPU/releases/tag/v1.0).
 Uncompress zip file and then execute run_pai.x64.bat.
 
+## How To Use
+
+SLIM surface rendering can be done by executing:
+
+```
+% slimviewGPU.exe in.slim2t
+```
+
+SLIM (.slim2t) data can be created by [mesh2slim](https://github.com/kanait/mesh2slim). Please check it out.
+
+On a window, rendering modes can be changed by pressing keys:
+
+- Press "1": Render by billboards, LOD disable (rendered by leaf nodes)
+- Press "2": Render by point sprites, LOD disable
+- Press "3": Render by billboards, LOD by depth of a slim tree
+- Press "4": Render by point sprites, LOD by depth of a slim tree
+- Press "5": Render by billboards, LOD by error
+- Press "6": Render slim balls, LOD disable
+- Press "7": Renderp slim balls, LOD by error
+- Press "m": Down LOD levels (finer levels)
+- Press "n": Up LOD levels (coaser levels)
+
 ## Prerequisites
 
 The following libraries are required for successfully compiling this software.
