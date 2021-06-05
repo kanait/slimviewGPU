@@ -1,8 +1,9 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: shader_fp_3rd.cg 2021/06/05 00:00:53 kanai Exp $
+// $Id: shader_fp_3rd.cg 2021/06/05 12:48:33 kanai Exp $
 //
-// Copyright (c) by Takashi Kanai. All rights reserved. 
+// Copyright (c) 2021 Takashi Kanai
+// Released under the MIT license
 //
 ////////////////////////////////////////////////////////////////////
 

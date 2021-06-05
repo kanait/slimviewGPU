@@ -1,8 +1,9 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: SlimTreeIO.hxx 2021/06/04 23:59:05 kanai Exp $
+// $Id: SlimTreeIO.hxx 2021/06/05 12:49:47 kanai Exp $
 //
-// Copyright (c) by Takashi Kanai. All rights reserved. 
+// Copyright (c) 2021 Takashi Kanai
+// Released under the MIT license
 //
 ////////////////////////////////////////////////////////////////////
 

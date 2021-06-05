@@ -1,8 +1,9 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: slimview.cxx 2021/06/04 19:22:17 kanai Exp $
+// $Id: slimview.cxx 2021/06/05 12:50:04 kanai Exp $
 //
-// Copyright (c) by Takashi Kanai. All rights reserved. 
+// Copyright (c) 2021 Takashi Kanai
+// Released under the MIT license
 //
 ////////////////////////////////////////////////////////////////////
 

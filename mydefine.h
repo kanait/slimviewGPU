@@ -1,8 +1,9 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: mydefine.h 2021/06/04 23:59:52 kanai Exp $
+// $Id: mydefine.h 2021/06/05 12:47:33 kanai Exp $
 //
-// Copyright (c) by Takashi Kanai. All rights reserved. 
+// Copyright (c) 2021 Takashi Kanai
+// Released under the MIT license
 //
 ////////////////////////////////////////////////////////////////////
 

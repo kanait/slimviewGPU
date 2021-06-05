@@ -1,8 +1,9 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: ViewFrustum.hxx 2021/06/05 00:01:30 kanai Exp $
+// $Id: ViewFrustum.hxx 2021/06/05 12:50:18 kanai Exp $
 //
-// Copyright (c) by Takashi Kanai. All rights reserved. 
+// Copyright (c) 2021 Takashi Kanai
+// Released under the MIT license
 //
 ////////////////////////////////////////////////////////////////////
 
