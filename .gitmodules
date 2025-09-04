@@ -3,4 +3,4 @@
 	url = https://github.com/yuki12/vecmath-cpp.git
 [submodule "external/render"]
 	path = external/render
-	url = https://github.com/kanait/render.git
+	url = git@github.com:kanait/render.git
