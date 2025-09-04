@@ -1,8 +1,8 @@
-////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////
 //
-// $Id: slimview.cxx 2021/06/05 12:50:04 kanai Exp $
+// $Id: slimview.cxx 2025/09/04 15:12:09 kanai Exp 
 //
-// Copyright (c) 2021 Takashi Kanai
+// Copyright (c) 2021-2025 Takashi Kanai
 // Released under the MIT license
 //
 ////////////////////////////////////////////////////////////////////
@@ -12,8 +12,11 @@
 #include "GL/glew.h"
 #include "GL/wglew.h"
 
-#include <GL/glut.h>
+#include <GLFW/glfw3.h>
 
+#if 0
+#include <GL/glut.h>
+#endif
 
 // #include <GL/gl.h>
 // #include <GL/glu.h>
@@ -23,7 +26,8 @@
 #include <Cg/cgGL.h>
 
 #include <vector>
-#include <list>
+#include <iomanip>
+//#include <list>
 using namespace std;
 
 #include <Point2.h>
@@ -72,7 +76,17 @@ using namespace kh_vecmath;
 #include "SlimTreeIO.hxx"
 #endif // NEW_SLIM
 
+// #include "shader_init.hxx"
+// ShaderPipelines shaders;
+
 ////////////////////////////////////////////////////////////////////////////////////
+
+// keyboard
+bool shift_key_pressed = false;
+bool control_key_pressed = false;
+// mouse
+bool left_button_pressed = false;
+bool right_button_pressed = false;
 
 // int width = 512;
 // int height = 512;
@@ -877,12 +891,14 @@ void setGaussKernelTexture()
 
 ////////////////////////////////////////////////////////////////////////////////////
 
+#if 0
 void MakeGlutWindowCurrent()
 {
   static int glutWinId = glutGetWindow();
 
   glutSetWindow( glutWinId );
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -1180,7 +1196,10 @@ void displayBall()
 	  
 	  glPushMatrix();
 	  glTranslatef( list[j]->centerX, list[j]->centerY, list[j]->centerZ );
-	  glutSolidSphere( list[j]->support, 10, 10 );
+#if 0
+      // 代わりの物が必要
+      glutSolidSphere( list[j]->support, 10, 10 );
+#endif
 	  glPopMatrix();
 
 	  ++( slimball_count );
@@ -1431,8 +1450,11 @@ void drawSlimTreeBall()
       convColor( slimballs[i]->userDefined(), color );
       ballMtl.setDiffuseColor( color[0], color[1], color[2], 1.0f );
       ballMtl.bind();
-
+#if 0
+      // 代わりの物が必要
       glutSolidSphere( slimballs[i]->support(), 50, 50 );
+#endif
+      
       glPopMatrix();
 
       ++( slimball_count );
@@ -1457,7 +1479,10 @@ int drawSlimBallBallLODError( SlimBallf* slimball, int level )
       ballMtl.setDiffuseColor( color[0], color[1], color[2], 1.0f );
       ballMtl.bind();
       
+#if 0
+      // 代わりの物が必要
       glutSolidSphere( slimball->support(), 10, 10 );
+#endif
       glPopMatrix();
 
       ++( count );
@@ -2141,11 +2166,13 @@ void displaySLIMGPU()
 
 void display()
 {
-  MakeGlutWindowCurrent();
+  //MakeGlutWindowCurrent();
 
+#if 0
   pane.setBackgroundColor( bgColor[0], bgColor[1], bgColor[2] );
   pane.clear( pbuffer_width, pbuffer_height );
   pane.initView();
+#endif
 
   switch ( render_mode )
     {
@@ -2172,6 +2199,7 @@ void display()
 
   checkGLErrors((char*)"display");
 
+#if 0
   double f = c11fps.CheckGetFPS();
   if ( max_c11fps < f ) max_c11fps = f;
 
@@ -2209,10 +2237,226 @@ void display()
   ::glutSwapBuffers();
 
   ::glutReportErrors();
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 
+static void error_callback(int error, const char* description) {
+  fputs(description, stderr);
+}
+
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+  glViewport(0, 0, width, height);
+}
+
+// keyboard event processing function
+static void key_callback(GLFWwindow* window, int key, int scancode, int action,
+                         int mods) {
+  VWIO vw_out;
+
+  // ESC
+  if ((key == GLFW_KEY_ESCAPE) && (action == GLFW_PRESS)) {
+    cout << "max fps: " << max_c11fps << endl;
+    destroyRenderTextures();
+    destroyFPBuffer();
+    destroyCg();
+    glfwSetWindowShouldClose(window, GL_TRUE);
+    return;
+  }
+
+  // q
+  else if ((key == GLFW_KEY_Q) && (action == GLFW_PRESS)) {
+    cout << "max fps: " << max_c11fps << endl;
+    destroyRenderTextures();
+    destroyFPBuffer();
+    destroyCg();
+    glfwSetWindowShouldClose(window, GL_TRUE);
+    return;
+  }
+
+  // v (output to .vw file)
+  else if ((key == GLFW_KEY_V) && (action == GLFW_PRESS)) {
+    cout << "output to .vw file ... " << endl;
+    vw_out.outputToFile( "tmp.vw", pane.manip() );
+    cout << "done." << endl;
+    return;
+  }
+
+  // p (screen capture)
+  else if ((key == GLFW_KEY_P) && (action == GLFW_PRESS)) {
+    // 
+    isCapture = true;
+    return;
+  }
+
+  // m
+  else if ((key == GLFW_KEY_M) && (action == GLFW_PRESS)) {
+
+    if ( lod_mode == LOD_ERROR ) {
+	  slimball_error *= 0.1;
+	  if ( slimball_error < 1.0e-15 ) slimball_error = 1.0e-15;
+	  cout << "slimball error threshold: " << slimball_error << endl;
+	}
+    else if ( lod_mode == LOD_LEVEL ) {
+	  ++(slimball_level);
+	  cout << "slimball level: " << slimball_level << endl;
+	}
+    return;
+  }
+
+  // 1 (Billboard, LOD None)
+  else if ((key == GLFW_KEY_1) && (action == GLFW_PRESS)) {
+    render_mode = RENDER_GPU;
+    draw_mode   = DRAW_BILLBOARD;
+    lod_mode = LOD_NONE;
+    max_c11fps = 0.0;
+    return;
+  }
+
+  // 2 (Point Sprite, LOD None)
+  else if ((key == GLFW_KEY_2) && (action == GLFW_PRESS)) {
+    render_mode = RENDER_GPU;
+    draw_mode   = DRAW_POINTSPRITE;
+    lod_mode = LOD_NONE;
+    max_c11fps = 0.0;
+    return;
+  }
+
+  // 3 (Billboard, LOD Level)
+  else if ((key == GLFW_KEY_3) && (action == GLFW_PRESS)) {
+    render_mode = RENDER_GPU;
+    draw_mode   = DRAW_BILLBOARD;
+    lod_mode = LOD_LEVEL;
+    max_c11fps = 0.0;
+    return;
+  }
+
+  // 4 (Point Sprite, LOD Level)
+  else if ((key == GLFW_KEY_4) && (action == GLFW_PRESS)) {
+    render_mode = RENDER_GPU;
+    draw_mode   = DRAW_POINTSPRITE;
+    lod_mode = LOD_LEVEL;
+    max_c11fps = 0.0;
+    return;
+  }
+
+  // 5 (Billboard, LOD Error)
+  else if ((key == GLFW_KEY_5) && (action == GLFW_PRESS)) {
+    render_mode = RENDER_GPU;
+    draw_mode   = DRAW_BILLBOARD;
+    lod_mode = LOD_ERROR;
+    max_c11fps = 0.0;
+    return;
+  }
+
+  // 6 (Ball, LOD None)
+  else if ((key == GLFW_KEY_6) && (action == GLFW_PRESS)) {
+    render_mode = RENDER_BALL;
+    lod_mode = LOD_NONE;
+    max_c11fps = 0.0;
+    return;
+  }
+
+  // 7 (Ball, LOD Error)
+  else if ((key == GLFW_KEY_7) && (action == GLFW_PRESS)) {
+    render_mode = RENDER_BALL;
+    lod_mode = LOD_ERROR;
+    max_c11fps = 0.0;
+    return;
+  }
+
+  // 8 (None, LOD None)
+  else if ((key == GLFW_KEY_8) && (action == GLFW_PRESS)) {
+    render_mode = RENDER_NONE;
+    lod_mode = LOD_NONE;
+    max_c11fps = 0.0;
+    return;
+  }
+
+  // shift
+  else if ((key == GLFW_KEY_LEFT_SHIFT) && (action == GLFW_PRESS)) {
+    shift_key_pressed = true;
+    return;
+  } else if ((key == GLFW_KEY_LEFT_SHIFT) && (action == GLFW_RELEASE)) {
+    shift_key_pressed = false;
+    return;
+  }
+
+  // control
+  else if ((key == GLFW_KEY_LEFT_CONTROL) && (action == GLFW_PRESS)) {
+    control_key_pressed = true;
+    return;
+  } else if ((key == GLFW_KEY_LEFT_CONTROL) && (action == GLFW_RELEASE)) {
+    control_key_pressed = false;
+    return;
+  }
+}
+
+// mouse event processing function
+static void mousebutton_callback(GLFWwindow* window, int button, int action,
+                                 int mods) {
+  double xd, yd;
+  glfwGetCursorPos(window, &xd, &yd);
+  pane.setScreenXY((int)xd, (int)yd);
+
+  if ((button == GLFW_MOUSE_BUTTON_1) && (action == GLFW_PRESS)) {
+    left_button_pressed = true;
+    pane.startRotate();
+    pane.startZoom();
+    pane.startMove();
+  } else if ((button == GLFW_MOUSE_BUTTON_1) && (action == GLFW_RELEASE)) {
+    left_button_pressed = false;
+    pane.finishRMZ();
+  } else if ((button == GLFW_MOUSE_BUTTON_2) && (action == GLFW_PRESS)) {
+    right_button_pressed = true;
+  } else if ((button == GLFW_MOUSE_BUTTON_2) && (action == GLFW_RELEASE)) {
+    right_button_pressed = false;
+  }
+}
+
+// cursor event processing function
+static void cursorpos_callback(GLFWwindow* window, double xd, double yd) {
+  int x = (int)xd;
+  int y = (int)yd;
+
+  if (left_button_pressed && !shift_key_pressed && !control_key_pressed) {
+    pane.updateRotate(x, y);
+  } else if (left_button_pressed && shift_key_pressed && !control_key_pressed) {
+    pane.updateZoom(x, y);
+  } else if (left_button_pressed && !shift_key_pressed && control_key_pressed) {
+    pane.updateMove(x, y);
+  }
+}
+
+// mouse wheel
+static void scroll_callback(GLFWwindow* window, double xoffset,
+                            double yoffset) {
+  pane.updateWheelZoom(yoffset);
+}
+
+// window resize
+static void windowsize_callback(GLFWwindow* window, int w, int h) {
+  width = w;
+  height = h;
+  pane.changeSize(w, h);
+  pane.setW( w );
+  pane.setH( h );
+
+  destroyRenderTextures();
+  destroyFPBuffer();
+
+  width = w; height = h;
+  pbuffer_width = w; pbuffer_height = h;
+  cap_width = w; cap_height = h;
+
+  initFPBuffer( pbuffer_width, pbuffer_height, cap_width, cap_height );
+  initRenderTexture( pbuffer_width, pbuffer_height );
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+#if 0
 void mouse( int button, int state, int x, int y )
 {
   pane.setScreenXY( x, y );
@@ -2278,7 +2522,8 @@ void reshapeFunc( int w, int h )
   initFPBuffer( pbuffer_width, pbuffer_height, cap_width, cap_height );
   initRenderTexture( pbuffer_width, pbuffer_height );
 
-  MakeGlutWindowCurrent();
+  glfwMakeContextCurrent(window);
+  //MakeGlutWindowCurrent();
   pane.initGL();
 }
 
@@ -2428,14 +2673,15 @@ void idle()
 {
   ::glutPostRedisplay();
 }
+#endif
 
 int main( int argc, char **argv )
 {
-  if ( argc < 2 )
-    {
-      std::cerr << "Usage: " << argv[0] << " in.slim2t" << std::endl;
-      return 1;
-    }
+  if ( argc < 2 ) {
+    std::cerr << "Usage: " << argv[0] << " in.slim2t" << std::endl;
+    return EXIT_FAILURE;
+  }
+
   char filename[BUFSIZ];
   strcpy( filename, argv[1] );
 
@@ -2451,6 +2697,44 @@ int main( int argc, char **argv )
   slimtreeIO.inputFromFile( filename );
 #endif // NEW_SLIM
 
+  // GLFW
+  // ここからウインドウの初期化処理
+  glfwSetErrorCallback(error_callback);
+  if (!glfwInit()) return EXIT_FAILURE;
+
+//  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+//  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+//  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+//  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+//  glfwWindowHint(GLFW_SAMPLES, 4);  // MSAA 4xサンプリング
+
+  GLFWwindow* window =
+    glfwCreateWindow(width, height, "GLFW Window", NULL, NULL);
+  if (!window) {
+    std::cerr << "Failed to create GLFW window" << std::endl;
+    const char* error;
+    glfwGetError(&error);
+    if (error) {
+      std::cerr << "GLFW Error: " << error << std::endl;
+    }
+    glfwTerminate();
+    return EXIT_FAILURE;
+  }
+
+  glfwMakeContextCurrent(window);
+
+  glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+  glfwSetKeyCallback(window, key_callback);
+  glfwSetMouseButtonCallback(window, mousebutton_callback);
+  glfwSetCursorPosCallback(window, cursorpos_callback);
+  glfwSetScrollCallback(window, scroll_callback);
+  glfwSetWindowSizeCallback(window, windowsize_callback);
+
+  glfwShowWindow(window);
+  glfwFocusWindow(window);
+
+#if 0
+  // GLUT
   ::glutInitWindowSize( width, height );
   ::glutInit( &argc, argv );
   //::glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_DEPTH | GLUT_STENCIL );
@@ -2464,7 +2748,8 @@ int main( int argc, char **argv )
 //   ::glutReshapeFunc( reshapeFunc );
   ::glutMotionFunc( motion );
 //   init_menu();
-  
+#endif
+
   pane.init( width, height );
   //pane.setIsLightOn( 1, false );
 
@@ -2500,10 +2785,59 @@ int main( int argc, char **argv )
 #endif // NEW_SLIM
 
   // Initialize some state for the GLUT window's rendering context.
+#if 0
   MakeGlutWindowCurrent();
+#endif
+  glfwMakeContextCurrent(window);
+
   pane.initGL();
   pane.setIsLightOn( 1, false );
   pane.setLightParameters( 0, myLight );
+
+  // GLSL shaders
+  //shaders = initShaders("shaders");
+
+  // 初期ビューポート設定（Mac でウインドウが小さく表示されるのを避けるために必須）
+  int fbWidth, fbHeight;
+  glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
+  glViewport(0, 0, fbWidth, fbHeight);
+
+  glfwSwapInterval(0);
+  // ここまでウインドウの初期化処理
+
+  // 描画ループ処理
+  while (!glfwWindowShouldClose(window)) {
+
+    // 画面のクリア・初期化
+    pane.setBackgroundColor( bgColor[0], bgColor[1], bgColor[2] );
+    glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
+    pane.clear(fbWidth, fbHeight);
+    pane.initView();
+    //pane.update(glmeshl.material());
+
+    display();
+    //glmeshl.draw(pane.shader());
+
+    pane.finish();
+
+    // fps 計測
+    double f = c11fps.CheckGetFPS();
+    if ( max_c11fps < f ) max_c11fps = f;
+    
+    std::stringstream ss;
+    ss << std::fixed << std::setprecision(3) << std::setw(8) << f << " fps - max " << std::setw(8) << max_c11fps << " fps";
+    std::string buf = ss.str();
+    
+    std::string txt = "GLFW Window - " + buf;
+    glfwSetWindowTitle( window, txt.c_str() );
+    
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+  }
+
+  // ウインドウ終了処理
+  glfwDestroyWindow(window);
+  glfwTerminate();
 
 #if 0  
   if ( argc >= 3 )
@@ -2526,9 +2860,10 @@ int main( int argc, char **argv )
   //     vw_in.inputFromFile( argv[2], pane.manip() );
   //   }
 
+#if 0
   ::glutMainLoop();
-  return 0;
+#endif
+  return EXIT_SUCCESS;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-
