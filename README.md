@@ -47,11 +47,11 @@ Our code uses Cg Toolkit library from nVIDIA. The latest version (Cg 3.1 release
 
 ### [zlib](https://zlib.net/)
 
-### [libpng](http://www.libpng.org/pub/png/libpng.html)
+### [libpng](https://www.libpng.org/pub/png/libpng.html)
 
-### [glew](http://glew.sourceforge.net/)
+### [glew](https://glew.sourceforge.net/)
 
-### glut (included in Cg Toolkit library)
+### [glfw](https://www.glfw.org/)
 
 ### [vecmath-cpp](https://github.com/yuki12/vecmath-cpp)
 ### [render](https://github.com/kanait/render)
